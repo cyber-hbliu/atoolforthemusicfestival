@@ -1,30 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-fetch_genres.py — classify the bill from TAGGED genres instead of prose bios.
 
-Sources (use any subset; more sources = better votes):
-  * Spotify   — set env vars SPOTIFY_CLIENT_ID / SPOTIFY_CLIENT_SECRET
-                (free: developer.spotify.com -> Create app -> copy both;
-                 no user login needed, this uses client-credentials)
-  * Discogs   — set env var DISCOGS_TOKEN
-                (free: discogs.com -> Settings -> Developers -> Generate token)
-  * Bandcamp  — reads bandcamp_tags.json if you've run bandcamp_tags.py
-
-Run:
-    export SPOTIFY_CLIENT_ID=... SPOTIFY_CLIENT_SECRET=... DISCOGS_TOKEN=...
-    python fetch_genres.py            # all artists in data.js
-    python fetch_genres.py --limit 10 # smoke test
-
-Writes genre_classification.json + genre_review.csv.
-Then: python build_data.py  (it prefers this file over bio_classification.json).
-
-Unlike classify_bios.py, there is NO keyword scanning here: every tag passes
-through an explicit TAG_MAP with weights, and groups are decided by votes
-across sources. Unknown tags are ignored (and listed in the review CSV so the
-map can grow). Spotify note: their API has been shedding metadata since 2024;
-if artist.genres comes back empty the source is skipped for that artist.
-"""
 import argparse, csv, json, os, re, sys, time, unicodedata
 import requests
 
