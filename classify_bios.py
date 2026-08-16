@@ -1,25 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-classify_bios.py — scan RA artist biographies for genre keywords and sort
-each artist into the five groups:
 
-    T techno · E electro · J dnb/jungle/breakbeats · H house ·
-    A ambient/experimental (DJs) · M ambient/folk/vocal (musicians) ·
-    B alternative/indie bands
-
-Pipeline:
-    1. python scrape_ra.py                  # locally → ra_dump.json (with biography field)
-    2. python classify_bios.py              # → bio_classification.json + bio_review.csv
-    3. python build_data.py                 # merges everything → data.js
-
-The classifier is deliberately conservative: it only assigns a group when the
-bio gives real signal (>= MIN_SCORE), and it writes bio_review.csv so you can
-eyeball every call and pin corrections in overrides.json. Precedence in
-build_data.py is: overrides.json > GROUP_OVERRIDES > hand metadata > this file.
-Keyword lexicons are ordered longest-match-first so "acid house" scores house,
-not techno; "dub techno" scores techno, not ambient dub.
-"""
 import csv, json, re, sys, unicodedata
 from collections import Counter
 
@@ -180,9 +161,6 @@ def main():
 
     print(f"{len(texts)} artists with source text · {len(out)} classified")
     print("wrote bio_classification.json + bio_review.csv")
-    print("Review the CSV; pin any corrections in overrides.json, then run "
-          "build_data.py. Bio-derived groups only fill artists that have no "
-          "hand-assigned group, so nothing you've curated gets clobbered.")
 
 
 if __name__ == "__main__":
