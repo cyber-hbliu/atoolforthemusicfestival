@@ -1,4 +1,4 @@
-// Making Time 2026 bill — see build_data.py for sources and pipeline
+
 const MT_DATA = {
  "meta": {
   "title": "Making Time 2026",
