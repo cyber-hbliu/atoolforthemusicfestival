@@ -1,0 +1,6 @@
+ra_dump.json
+bandcamp_tags.json
+*_classification.json
+*_review.csv
+bandcamp_debug.html
+__pycache__/

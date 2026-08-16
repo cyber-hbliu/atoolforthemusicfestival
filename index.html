@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Making Time ∞ 2026 — the bill, sorted</title>
+<meta name="description" content="A tool for Making Time ∞ 2026: explore the bill by genre, geography, and connections, or build your own timetable and save it as a picture.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+<style>
+:root, html[data-theme="day"]{
+  --bg:#fcfbf7; --ink:#141410; --line:#141410; --soft:rgba(20,20,16,.26);
+  --techno:#f0532d; --electro:#4cc8c0; --jungle:#5fb558; --house:#f7c531; --ambient:#6e9bef; --folk:#b79df0; --bands:#e879b9;
+  --none:#e6e4da; --panel-ink:#141410;
+}
+html[data-theme="night"]{
+  --bg:#30302d; --ink:#eceae2; --line:#eceae2; --soft:rgba(236,234,226,.28);
+  --techno:#f0532d; --electro:#4cc8c0; --jungle:#5fb558; --house:#f7c531; --ambient:#6e9bef; --folk:#b79df0; --bands:#e879b9;
+  --none:#3c3c38; --panel-ink:#141410;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;
+  font-size:15px;line-height:1.5;overflow-x:hidden;transition:background .2s,color .2s}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;background:none;border:none;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.up{text-transform:uppercase;letter-spacing:.02em}
+
+header{padding:52px 0 8px}
+header h1{font-weight:800;font-size:clamp(23px,3.6vw,38px);line-height:1.14;letter-spacing:-.025em;max-width:900px;margin-bottom:14px}
+header .sub2{font-size:15px;font-weight:500;max-width:680px;padding-bottom:36px}
+
+/* nav = tabs */
+nav{position:sticky;top:0;z-index:40;background:var(--bg);border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);transition:background .2s}
+.navin{display:flex;align-items:stretch;gap:0}
+.tab{font-size:13px;font-weight:800;padding:14px 26px;border-right:1px solid var(--line)}
+.tab:first-child{border-left:1px solid var(--line)}
+.tab.on{background:var(--ink);color:var(--bg)}
+#themebtn{font-size:12px;font-weight:700;text-decoration:underline;text-underline-offset:3px;
+  margin-left:auto;padding:0 4px}
+
+section{padding:64px 0 0}
+h2{font-weight:800;font-size:clamp(26px,4vw,40px);letter-spacing:-.03em;margin-bottom:22px}
+.smallnote{font-size:13.5px;font-weight:500;opacity:.7;margin:-10px 0 24px;max-width:620px}
+
+/* ---------- explore: filters ---------- */
+.filters{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:30px}
+.f{font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:7px}
+.f i{width:10px;height:10px;flex:none;background:var(--soft)}
+.f[data-g="techno"] i{background:var(--techno)} .f[data-g="electro"] i{background:var(--electro)}
+.f[data-g="jungle"] i{background:var(--jungle)} .f[data-g="house"] i{background:var(--house)}
+.f[data-g="ambient"] i{background:var(--ambient)} .f[data-g="folk"] i{background:var(--folk)}
+.f[data-g="bands"] i{background:var(--bands)}
+.f[data-g="all"] i{background:var(--ink)}
+.f.on{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:2px}
+.f:hover{text-decoration:underline;text-underline-offset:5px}
+.filters input{background:none;border:none;border-bottom:2px solid var(--ink);color:var(--ink);
+  font-family:inherit;font-size:13px;font-weight:600;padding:3px 0;width:170px;margin-left:auto}
+.filters input::placeholder{color:inherit;opacity:.45}
+.filters input:focus{outline:none}
+
+/* genre diagram */
+.gbar{display:flex;height:64px;border:1px solid var(--line);margin-bottom:10px}
+.gbar button{flex-grow:1;border:none;border-right:1px solid var(--line);padding:0;min-width:8px;
+  transition:flex-grow .3s ease}
+.gbar button:last-child{border-right:none}
+.gbar button:hover,.gbar button.on{outline:3px solid var(--ink);outline-offset:-3px}
+.gbarkey{display:flex;gap:20px;flex-wrap:wrap;font-size:11.5px;font-weight:700;margin-bottom:38px}
+.gbarkey i{display:inline-block;width:10px;height:10px;margin-right:7px}
+
+/* group panels */
+.gpanel{background:var(--pc,var(--none));color:var(--panel-ink);padding:22px 26px 8px;margin-bottom:14px}
+.gpanel.unsorted{background:var(--none)}
+html[data-theme="night"] .gpanel.unsorted{color:var(--ink)}
+.ghead{display:flex;align-items:baseline;gap:14px;padding-bottom:14px;border-bottom:2px solid currentColor}
+.ghead h3{font-weight:800;font-size:clamp(20px,3vw,28px);letter-spacing:-.025em}
+.ghead .n{font-size:13px;font-weight:700;margin-left:auto}
+.arow{display:grid;grid-template-columns:minmax(170px,1.15fr) minmax(110px,.8fr) minmax(120px,.8fr) minmax(150px,1.1fr);
+  gap:16px;align-items:baseline;padding:10px 0;border-bottom:1px solid rgba(20,20,16,.3)}
+.arow:last-child{border-bottom:none}
+.aname{font-weight:700;font-size:16px;letter-spacing:-.01em}
+.aname:hover{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:2px}
+.aname::after{content:"↗";font-size:11px;font-weight:400;margin-left:5px;opacity:.6}
+sup.lv{font-size:9px;font-weight:700;letter-spacing:.04em;margin-left:7px;text-transform:uppercase;
+  border:1px solid currentColor;padding:1px 4px;vertical-align:2px}
+.aloc,.albl,.atags{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.albl{font-weight:700}
+@media(max-width:680px){
+  .arow{grid-template-columns:1.25fr .8fr}
+  .atags,.albl{display:none}
+}
+
+/* geography */
+.gtoggle{font-size:12.5px;font-weight:700;margin-bottom:26px}
+.gtoggle button{font-size:inherit;font-weight:inherit;padding:0 2px;opacity:.5}
+.gtoggle button.on{opacity:1;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+.gtoggle .sep{padding:0 10px;opacity:.4}
+.grow{display:grid;grid-template-columns:190px 1fr 44px;gap:18px;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--soft)}
+.glabel{font-size:13.5px;font-weight:600}
+.gtrack{height:14px}
+.gfill{height:100%;background:var(--ink);transition:width .4s ease}
+.gcount{font-size:12.5px;font-weight:700;text-align:right}
+@media(max-width:620px){.grow{grid-template-columns:120px 1fr 36px}}
+
+/* web */
+#webwrap{position:relative;border:1px solid var(--line);margin-top:4px}
+#webcanvas{display:block;width:100%;height:620px;cursor:grab}
+#webtip{position:absolute;pointer-events:none;background:var(--bg);border:1px solid var(--line);
+  padding:8px 12px;font-size:12px;display:none;max-width:240px;z-index:5}
+#webtip b{display:block;font-size:14px;font-weight:700}
+.legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:14px;font-size:11.5px;font-weight:600}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:7px}
+.legend .sq{background:none;border:1px solid var(--ink)}
+
+/* ---------- timetable ---------- */
+.modes{display:flex;border:1px solid var(--line);margin-bottom:30px;max-width:520px}
+.modes button{flex:1;padding:13px 10px;font-size:13px;font-weight:800;border-right:1px solid var(--line)}
+.modes button:last-child{border-right:none}
+.modes button.on{background:var(--ink);color:var(--bg)}
+.picklist{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:2px;margin-bottom:12px}
+.pick{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--soft);
+  font-size:13px;font-weight:600;text-align:left}
+.pick i{width:9px;height:9px;flex:none}
+.pick .lv{font-size:8px;font-weight:800;border:1px solid currentColor;padding:0 3px;margin-left:auto}
+.pick.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pick:hover{border-color:var(--ink)}
+.surp{max-width:560px}
+.surp .row{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:22px}
+.tgl{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--line);padding:9px 13px}
+.tgl i{width:10px;height:10px}
+.tgl.on{background:var(--ink);color:var(--bg)}
+.tgl.on i{outline:1px solid var(--bg)}
+.numrow{display:flex;align-items:center;gap:14px;margin-bottom:26px;font-size:13px;font-weight:700}
+.numrow input{width:200px;accent-color:var(--ink)}
+.go{background:var(--ink);color:var(--bg);font-size:14px;font-weight:800;padding:14px 26px;letter-spacing:.02em}
+.go:hover{opacity:.85}
+.outbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.outbar .count{font-size:13px;font-weight:700}
+.outbar button{font-size:12px;font-weight:800;border:1px solid var(--line);padding:10px 18px}
+.outbar button.save{background:var(--ink);color:var(--bg)}
+.outbar button:hover{opacity:.85}
+#poster{width:100%;max-width:640px;display:block;border:1px solid var(--line)}
+.empty{font-size:14px;font-weight:500;opacity:.65;padding:8px 0 40px}
+
+/* colophon */
+#colophon p{max-width:none;font-size:15px;margin-bottom:14px}
+#colophon .src{font-size:13.5px;font-weight:600;line-height:2}
+#colophon a{text-decoration:underline;text-underline-offset:3px}
+footer{margin-top:96px;border-top:1px solid var(--line);padding:20px 0 44px;
+  font-size:12px;font-weight:600;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+/* 50/50 split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start;padding-top:56px}
+.split>.right{position:sticky;top:64px}
+.split section{padding:0 0 64px}
+.split section:last-child{padding-bottom:0}
+#webcanvas{height:calc(100vh - 220px);min-height:460px}
+#poster{max-width:100%}
+.msub{display:none}
+@media(max-width:920px){
+  .split{grid-template-columns:1fr;gap:0;padding-top:36px}
+  .split>.right{position:static}
+  .split section{padding:0 0 64px}
+  #webcanvas{height:70vh;min-height:420px}
+  .msub{display:flex;position:sticky;top:48px;z-index:35;background:var(--bg);
+    border-bottom:1px solid var(--line)}
+  .msub button{flex:1;padding:12px 6px;font-size:11.5px;font-weight:800;
+    border-right:1px solid var(--line)}
+  .msub button:last-child{border-right:none}
+  .msub button.on{background:var(--ink);color:var(--bg)}
+  .m-hidden{display:none}
+}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="wrap"><header>
+  <h1>A tool for Making Time ∞ 2026</h1>
+  <p class="sub2">Planning your festival timetable, or getting to know the PLURT. Every artist name links to their Bandcamp or their own page.</p>
+</header></div>
+
+<nav><div class="wrap"><div class="navin">
+  <button class="tab up on" data-tab="explore">Explore</button>
+  <button class="tab up" data-tab="timetable">Timetable</button>
+  <button id="themebtn" class="up">Night</button>
+</div></div></nav>
+
+<main class="wrap">
+
+<!-- ================= EXPLORE ================= -->
+<div id="pane-explore">
+
+<div class="msub up" data-pane="explore">
+  <button class="on" data-v="genres">Genres</button>
+  <button data-v="geography">Geography</button>
+  <button data-v="web">Web</button>
+</div>
+
+<div class="split">
+<div class="left">
+<section id="genres">
+  <h2>Genres</h2>
+  <div class="filters up" id="efilters">
+    <button class="f on" data-g="all"><i></i>All</button>
+    <button class="f" data-g="techno"><i></i>Techno</button>
+    <button class="f" data-g="electro"><i></i>Electro</button>
+    <button class="f" data-g="jungle"><i></i>DnB / Jungle / Breaks</button>
+    <button class="f" data-g="house"><i></i>House</button>
+    <button class="f" data-g="ambient"><i></i>Ambient / Experimental</button>
+    <button class="f" data-g="folk"><i></i>Ambient / Folk / Vocal</button>
+    <button class="f" data-g="bands"><i></i>Alternative / Indie Bands</button>
+    <input id="esearch" type="search" placeholder="SEARCH" aria-label="Search the bill">
+  </div>
+  <div class="gbar" id="gbar"></div>
+  <div class="gbarkey up" id="gbarkey"></div>
+  <div id="groups"></div>
+</section>
+
+<section id="geography">
+  <h2>Geography</h2>
+  <div class="gtoggle up">
+    <button class="on" data-mode="country">Country</button><span class="sep">/</span><button data-mode="region">Region</button>
+  </div>
+  <div id="barlist"></div>
+</section>
+</div>
+<div class="right">
+<section id="web">
+  <h2>Web</h2>
+  <div id="webwrap"><canvas id="webcanvas"></canvas><div id="webtip"></div></div>
+  <div class="legend up">
+    <span><i style="background:var(--techno)"></i>Techno</span>
+    <span><i style="background:var(--electro)"></i>Electro</span>
+    <span><i style="background:var(--jungle)"></i>DnB / Jungle / Breaks</span>
+    <span><i style="background:var(--house)"></i>House</span>
+    <span><i style="background:var(--ambient)"></i>Ambient / Experimental</span>
+    <span><i style="background:var(--folk)"></i>Ambient / Folk / Vocal</span>
+    <span><i style="background:var(--bands)"></i>Bands</span>
+    <span><i class="sq"></i>Genre tag</span>
+  </div>
+</section>
+</div>
+</div>
+
+<section id="colophon">
+  <h2>Colophon</h2>
+  <p>Making Time is David Pianka's Philadelphia party, running since 2000, and a festival at Fort Mifflin since 2021. This page covers the 2026 lineup as posted on the official site.</p>
+  <p>The lineup and artist links come from the official lineup page below. Groups and genres are derived from RA bios, <a href="https://musicbrainz.org/" target="_blank" rel="noopener">MusicBrainz</a>, and artist Bandcamp pages.</p>
+  <p class="src">
+    – lineup — <a href="https://makingtimeisrad.com/lineup/" target="_blank" rel="noopener">makingtimeisrad.com/lineup</a><br>
+    – RA listing — <a href="https://ra.co/events/2395557" target="_blank" rel="noopener">ra.co/events/2395557</a><br>
+    – design and build — <a href="https://github.com/cyber-hbliu" target="_blank" rel="noopener">Hebe Liu</a>
+  </p>
+</section>
+
+</div>
+
+<!-- ================= TIMETABLE ================= -->
+<div id="pane-timetable" hidden>
+
+<div class="msub up" data-pane="timetable">
+  <button class="on" data-v="build">Build</button>
+  <button data-v="timetableout">Your timetable</button>
+</div>
+
+<div class="split">
+<div class="left">
+<section id="build">
+  <h2>Build</h2>
+  <p class="smallnote">Set times drop the week of the festival; until then, timetables group by genre.</p>
+  <div class="modes up" role="tablist">
+    <button class="on" data-m="pick" role="tab">Pick artists</button>
+    <button data-m="surprise" role="tab">Surprise me</button>
+  </div>
+
+  <div id="pickmode">
+    <div class="filters up" id="tfilters">
+      <button class="f on" data-g="all"><i></i>All</button>
+      <button class="f" data-g="techno"><i></i>Techno</button>
+      <button class="f" data-g="electro"><i></i>Electro</button>
+      <button class="f" data-g="jungle"><i></i>DnB / Jungle</button>
+      <button class="f" data-g="house"><i></i>House</button>
+      <button class="f" data-g="ambient"><i></i>Ambient (DJs)</button>
+      <button class="f" data-g="folk"><i></i>Folk / Vocal</button>
+      <button class="f" data-g="bands"><i></i>Bands</button>
+      <input id="tsearch" type="search" placeholder="SEARCH" aria-label="Search artists">
+    </div>
+    <div class="picklist" id="picklist"></div>
+  </div>
+
+  <div id="surprisemode" class="surp" hidden>
+    <div class="row" id="tastes">
+      <button class="tgl on" data-g="techno"><i style="background:var(--techno)"></i>Techno</button>
+      <button class="tgl on" data-g="electro"><i style="background:var(--electro)"></i>Electro</button>
+      <button class="tgl on" data-g="jungle"><i style="background:var(--jungle)"></i>DnB / Jungle / Breaks</button>
+      <button class="tgl on" data-g="house"><i style="background:var(--house)"></i>House</button>
+      <button class="tgl on" data-g="ambient"><i style="background:var(--ambient)"></i>Ambient / Experimental</button>
+      <button class="tgl on" data-g="folk"><i style="background:var(--folk)"></i>Ambient / Folk / Vocal</button>
+      <button class="tgl on" data-g="bands"><i style="background:var(--bands)"></i>Alternative / Indie Bands</button>
+    </div>
+    <div class="numrow up"><span>Acts:</span>
+      <input type="range" id="howmany" min="5" max="40" value="15">
+      <span id="howmanyv">15</span>
+    </div>
+    <button class="go up" id="generate">Generate timetable</button>
+  </div>
+</section>
+</div>
+<div class="right">
+<section id="timetableout">
+  <h2>Your timetable</h2>
+  <div class="outbar">
+    <span class="count up" id="count">0 artists</span>
+    <button class="save up" id="save">Save as picture</button>
+    <button class="up" id="clear">Clear</button>
+  </div>
+  <p class="empty" id="empty">Nothing yet — pick artists above, or generate a surprise.</p>
+  <canvas id="poster" style="display:none"></canvas>
+</section>
+</div>
+</div>
+
+</div>
+
+<footer class="up">
+  <span id="foot-right"></span>
+</footer>
+
+</main>
+
+<script src="data.js"></script>
+<script>
+(function(){
+"use strict";
+const D = MT_DATA;
+const GLABEL = {techno:'Techno', electro:'Electro', jungle:'DnB / Jungle / Breaks', house:'House',
+                ambient:'Ambient / Experimental', folk:'Ambient / Folk / Vocal',
+                bands:'Alternative / Indie Bands', none:'Unsorted'};
+const ORDER = ['techno','electro','jungle','house','ambient','folk','bands','none'];
+const BILL = D.artists.slice().sort((x,y)=>x.name.toLowerCase()<y.name.toLowerCase()?-1:1);
+const byName={}; BILL.forEach(a=>byName[a.name]=a);
+const prim = a => a.groups[0] || 'none';
+const link = a => a.url || ('https://bandcamp.com/search?q='+encodeURIComponent(a.name)+'&item_type=b');
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();
+
+/* ---------- theme ---------- */
+const root=document.documentElement, tbtn=document.getElementById('themebtn');
+function setTheme(t){root.dataset.theme=t;tbtn.textContent=t==='day'?'Night':'Day';if(nodes.length)draw();}
+if(matchMedia('(prefers-color-scheme: dark)').matches) setTheme('night');
+tbtn.addEventListener('click',()=>setTheme(root.dataset.theme==='day'?'night':'day'));
+
+/* ---------- tabs ---------- */
+const panes={explore:document.getElementById('pane-explore'),timetable:document.getElementById('pane-timetable')};
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  panes.explore.hidden = t!=='explore';
+  panes.timetable.hidden = t!=='timetable';
+  history.replaceState(null,'','#'+t);
+  if(t==='explore' && (!cv.width || cv.width===0)) buildWeb();
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+
+/* ---------- explore ---------- */
+const eState={group:'all',search:''};
+function eMatch(a){
+  const q=eState.search.trim().toLowerCase();
+  return (eState.group==='all'||a.groups.includes(eState.group)) &&
+    (!q||a.name.toLowerCase().includes(q)||a.city.toLowerCase().includes(q)||
+     a.country.toLowerCase().includes(q)||(a.label||'').toLowerCase().includes(q)||
+     a.genres.join(' ').toLowerCase().includes(q));
+}
+function renderDiagram(){
+  const counts={}; ORDER.forEach(g=>counts[g]=0);
+  BILL.forEach(a=>counts[prim(a)]++);
+  document.getElementById('gbar').innerHTML = ORDER.filter(g=>counts[g]).map(g=>
+    `<button data-g="${g}" class="${eState.group===g?'on':''}" title="${GLABEL[g]} — ${counts[g]}"
+      style="flex-grow:${counts[g]};background:${g==='none'?'var(--none)':'var(--'+g+')'}"
+      aria-label="${GLABEL[g]}, ${counts[g]} artists"></button>`).join('');
+  document.getElementById('gbarkey').innerHTML = ORDER.filter(g=>counts[g]).map(g=>
+    `<span><i style="background:${g==='none'?'var(--none)':'var(--'+g+')'}"></i>${GLABEL[g]} ${counts[g]}</span>`).join('');
+}
+function renderGroups(){
+  document.getElementById('groups').innerHTML = ORDER.map(g=>{
+    const rows=BILL.filter(a=>prim(a)===g&&eMatch(a));
+    if(!rows.length) return '';
+    const style = g==='none' ? '' : ` style="--pc:var(--${g})"`;
+    return `<div class="gpanel${g==='none'?' unsorted':''}"${style}>
+      <div class="ghead"><h3>${GLABEL[g]}</h3><span class="n">${rows.length}</span></div>`+
+      rows.map(a=>`<div class="arow">
+        <span><a class="aname" href="${link(a)}" target="_blank" rel="noopener">${esc(a.name)}</a>${a.live?'<sup class="lv">Live</sup>':''}</span>
+        <span class="aloc">${esc(a.city||a.country)}</span>
+        <span class="albl">${esc(a.label)}</span>
+        <span class="atags">${a.genres.slice(0,3).map(esc).join(' · ')}</span></div>`).join('')+
+      `</div>`;
+  }).join('') || '<p class="smallnote" style="padding-top:14px">Nothing matches.</p>';
+}
+document.getElementById('esearch').addEventListener('input',e=>{eState.search=e.target.value;renderGroups();});
+document.getElementById('efilters').addEventListener('click',e=>{
+  const c=e.target.closest('.f');if(!c)return;
+  document.querySelectorAll('#efilters .f').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on');eState.group=c.dataset.g;
+  renderDiagram();renderGroups();renderBars();buildWeb();
+});
+document.getElementById('gbar').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  eState.group = eState.group===b.dataset.g ? 'all' : b.dataset.g;
+  document.querySelectorAll('#efilters .f').forEach(x=>x.classList.toggle('on',x.dataset.g===eState.group));
+  renderDiagram();renderGroups();renderBars();buildWeb();
+});
+
+let placeMode='country';
+function renderBars(){
+  const counts={};
+  BILL.filter(a=>eState.group==='all'||a.groups.includes(eState.group))
+    .forEach(a=>{const k=a[placeMode]||'Unknown';counts[k]=(counts[k]||0)+1;});
+  const rows=Object.entries(counts).sort((x,y)=>y[1]-x[1]);
+  const max=rows.length?rows[0][1]:1;
+  document.getElementById('barlist').innerHTML=rows.map(([k,v])=>
+    `<div class="grow"><span class="glabel">${esc(k)}</span>
+     <span class="gtrack"><span class="gfill" style="width:${(v/max*100).toFixed(1)}%"></span></span>
+     <span class="gcount">${v}</span></div>`).join('');
+}
+document.querySelectorAll('.gtoggle button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.gtoggle button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');placeMode=b.dataset.mode;renderBars();
+}));
+
+/* web graph */
+const cv=document.getElementById('webcanvas'),ctx=cv.getContext('2d'),tip=document.getElementById('webtip');
+let nodes=[],edges=[],running=false,view={x:0,y:0,k:1},settle=0;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const DPR=devicePixelRatio||1;
+function buildWeb(){
+  if(panes.explore.hidden || !cv.clientWidth) return;
+  const arts=BILL.filter(a=>eState.group==='all'||a.groups.includes(eState.group));
+  const gc={};arts.forEach(a=>a.genres.forEach(g=>gc[g]=(gc[g]||0)+1));
+  const topG=Object.entries(gc).filter(([,c])=>c>=3).sort((x,y)=>y[1]-x[1]).slice(0,26).map(([g])=>g);
+  const W=cv.width=cv.clientWidth*DPR,H=cv.height=cv.clientHeight*DPR,R=Math.min(W,H)/2;
+  nodes=[];edges=[];const gi={};
+  topG.forEach((g,i)=>{
+    const own={};arts.filter(a=>a.genres.includes(g)).forEach(a=>own[prim(a)]=(own[prim(a)]||0)+1);
+    const dom=Object.entries(own).sort((x,y)=>y[1]-x[1])[0][0];
+    const ang=i/topG.length*Math.PI*2;
+    gi[g]=nodes.length;
+    nodes.push({type:'genre',label:g,group:dom,
+      x:W/2+Math.cos(ang)*R*.55,y:H/2+Math.sin(ang)*R*.55,vx:0,vy:0,r:(4+gc[g]*.7)*DPR});
+  });
+  arts.forEach(a=>{
+    const n={type:'artist',label:a.name,a:a,group:prim(a),
+      x:W/2+(Math.random()-.5)*R,y:H/2+(Math.random()-.5)*R,vx:0,vy:0,r:5.5*DPR};
+    const id=nodes.length;nodes.push(n);
+    let linked=false;
+    a.genres.forEach(g=>{if(gi[g]!==undefined){edges.push([id,gi[g]]);linked=true;}});
+    if(!linked){
+      const same=topG.map(g=>gi[g]).filter(ix=>nodes[ix].group===n.group);
+      if(same.length)edges.push([id,same[Math.floor(Math.random()*same.length)]]);
+    }
+  });
+  view={x:0,y:0,k:1};
+  if(reduced){for(let i=0;i<260;i++)tick();draw();}
+  else{running=true;settle=0;requestAnimationFrame(loop);}
+}
+function tick(){
+  const W=cv.width,H=cv.height;
+  for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+    const a=nodes[i],b=nodes[j];
+    let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy;if(d2<1)d2=1;
+    if(d2<160000*DPR){const d=Math.sqrt(d2),f=1300*DPR/d2;dx/=d;dy/=d;
+      a.vx+=dx*f;a.vy+=dy*f;b.vx-=dx*f;b.vy-=dy*f;}
+  }
+  edges.forEach(([i,j])=>{
+    const a=nodes[i],b=nodes[j];
+    const dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)||1,f=(d-90*DPR)*.004;
+    a.vx+=dx/d*f;a.vy+=dy/d*f;b.vx-=dx/d*f;b.vy-=dy/d*f;});
+  nodes.forEach(n=>{n.vx+=(W/2-n.x)*.0012;n.vy+=(H/2-n.y)*.0012;
+    n.vx*=.86;n.vy*=.86;n.x+=n.vx;n.y+=n.vy;});
+}
+function draw(){
+  const W=cv.width,H=cv.height,ink=cssv('ink'),soft=cssv('soft');
+  ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,W,H);
+  ctx.setTransform(view.k,0,0,view.k,view.x,view.y);
+  ctx.lineWidth=DPR*.7;ctx.strokeStyle=soft;
+  ctx.beginPath();
+  edges.forEach(([i,j])=>{ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);});
+  ctx.stroke();
+  nodes.forEach(n=>{
+    const col=cssv(n.group);
+    if(n.type==='genre'){
+      ctx.strokeStyle=ink;ctx.lineWidth=DPR;
+      ctx.strokeRect(n.x-n.r,n.y-n.r,n.r*2,n.r*2);
+      ctx.fillStyle=ink;
+      ctx.font=`700 ${10*DPR}px Schibsted Grotesk`;ctx.textAlign='center';
+      ctx.fillText(n.label.toUpperCase(),n.x,n.y-n.r-6*DPR);
+    }else{
+      ctx.fillStyle=col;
+      ctx.fillRect(n.x-n.r,n.y-n.r,n.r*2,n.r*2);
+    }
+  });
+}
+function loop(){if(!running)return;tick();draw();if(++settle<600)requestAnimationFrame(loop);else running=false;}
+function pt(e){const r=cv.getBoundingClientRect();
+  return {x:((e.clientX-r.left)*DPR-view.x)/view.k,y:((e.clientY-r.top)*DPR-view.y)/view.k};}
+function hit(p){for(let i=nodes.length-1;i>=0;i--){const n=nodes[i];
+  const dx=p.x-n.x,dy=p.y-n.y;if(dx*dx+dy*dy<(n.r+6*DPR)**2)return n;}return null;}
+let drag=null;
+cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,moved:false};cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',e=>{
+  if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+    if(Math.abs(dx)+Math.abs(dy)>3)drag.moved=true;
+    view.x+=dx*DPR;view.y+=dy*DPR;drag.x=e.clientX;drag.y=e.clientY;
+    if(!running)draw();return;}
+  const n=hit(pt(e));cv.style.cursor=n?'pointer':'grab';
+  if(n){const r=cv.getBoundingClientRect();
+    tip.style.display='block';
+    tip.style.left=Math.min(e.clientX-r.left+14,r.width-250)+'px';
+    tip.style.top=(e.clientY-r.top+12)+'px';
+    tip.innerHTML=n.type==='genre'?`<b>${esc(n.label)}</b>Genre tag`
+      :`<b>${esc(n.label)}</b>${esc(n.a.city||n.a.country)}${n.a.label?' · '+esc(n.a.label):''}`;
+  }else tip.style.display='none';
+});
+cv.addEventListener('pointerup',e=>{
+  if(drag&&!drag.moved){const n=hit(pt(e));if(n&&n.type==='artist')window.open(link(n.a),'_blank','noopener');}drag=null;});
+cv.addEventListener('pointerleave',()=>{tip.style.display='none';});
+cv.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const k=Math.max(.4,Math.min(3,view.k*(e.deltaY<0?1.1:.9)));
+  const r=cv.getBoundingClientRect();
+  const mx=(e.clientX-r.left)*DPR,my=(e.clientY-r.top)*DPR;
+  view.x=mx-(mx-view.x)*k/view.k;view.y=my-(my-view.y)*k/view.k;view.k=k;
+  if(!running)draw();
+},{passive:false});
+addEventListener('resize',()=>buildWeb());
+
+/* ---------- timetable ---------- */
+const tState={group:'all',search:'',sel:new Set()};
+function tMatch(a){
+  const q=tState.search.trim().toLowerCase();
+  return (tState.group==='all'||a.groups.includes(tState.group)) &&
+    (!q||a.name.toLowerCase().includes(q)||a.city.toLowerCase().includes(q)||
+     (a.label||'').toLowerCase().includes(q)||a.genres.join(' ').toLowerCase().includes(q));
+}
+function renderPicks(){
+  document.getElementById('picklist').innerHTML = BILL.filter(tMatch).map(a=>{
+    const g=prim(a);
+    return `<button class="pick ${tState.sel.has(a.name)?'sel':''}" data-a="${esc(a.name)}">
+      <i style="background:${g==='none'?'var(--soft)':'var(--'+g+')'}"></i>
+      <span>${esc(a.name)}</span>${a.live?'<span class="lv up">Live</span>':''}</button>`;
+  }).join('');
+}
+document.getElementById('picklist').addEventListener('click',e=>{
+  const b=e.target.closest('.pick');if(!b)return;
+  const n=b.dataset.a;
+  tState.sel.has(n)?tState.sel.delete(n):tState.sel.add(n);
+  b.classList.toggle('sel');
+  renderPoster();
+});
+document.getElementById('tsearch').addEventListener('input',e=>{tState.search=e.target.value;renderPicks();});
+document.getElementById('tfilters').addEventListener('click',e=>{
+  const c=e.target.closest('.f');if(!c)return;
+  document.querySelectorAll('#tfilters .f').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on');tState.group=c.dataset.g;renderPicks();
+});
+document.querySelector('.modes').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('.modes button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  document.getElementById('pickmode').hidden = b.dataset.m!=='pick';
+  document.getElementById('surprisemode').hidden = b.dataset.m!=='surprise';
+});
+document.getElementById('tastes').addEventListener('click',e=>{
+  const b=e.target.closest('.tgl');if(b)b.classList.toggle('on');
+});
+const slider=document.getElementById('howmany');
+slider.addEventListener('input',()=>document.getElementById('howmanyv').textContent=slider.value);
+document.getElementById('generate').addEventListener('click',()=>{
+  const chosen=[...document.querySelectorAll('.tgl.on')].map(b=>b.dataset.g);
+  if(!chosen.length){alert('Pick at least one genre.');return;}
+  const n=+slider.value;
+  const pool=BILL.filter(a=>a.groups.some(g=>chosen.includes(g)));
+  const wild=BILL.filter(a=>!pool.includes(a)&&prim(a)!=='none');
+  const shuffled=arr=>arr.slice().sort(()=>Math.random()-.5);
+  const nWild=Math.min(wild.length,Math.max(0,Math.round(n*.15)));
+  const picks=shuffled(pool).slice(0,n-nWild).concat(shuffled(wild).slice(0,nWild));
+  tState.sel=new Set(picks.map(a=>a.name));
+  renderPicks();renderPoster();
+  if(MQ.matches){mview.timetable='timetableout';applyMobile();}
+  document.getElementById('timetableout').scrollIntoView({behavior:'smooth'});
+});
+document.getElementById('clear').addEventListener('click',()=>{tState.sel.clear();renderPicks();renderPoster();});
+
+/* poster */
+const PC={techno:'#f0532d',electro:'#4cc8c0',jungle:'#5fb558',house:'#f7c531',ambient:'#6e9bef',folk:'#b79df0',bands:'#e879b9',none:'#e6e4da'};
+const pcv=document.getElementById('poster'), pctx=pcv.getContext('2d');
+const S=2, PW=1000;
+const DAYS=['Fri','Sat','Sun'];
+const hasTimes = D.meta.settimes;
+
+function layout(){
+  const sel=[...tState.sel].map(n=>byName[n]).filter(Boolean);
+  const ops=[]; let y=0;
+  ops.push({t:'head'}); y+=150;
+  if(hasTimes){
+    for(const d of DAYS){
+      const rows=sel.filter(a=>a.set&&a.set[0]===d).sort((x,q)=>x.set[1]<q.set[1]?-1:1);
+      if(!rows.length) continue;
+      ops.push({t:'gh',label:{Fri:'Friday, Sep 18',Sat:'Saturday, Sep 19',Sun:'Sunday, Sep 20'}[d],color:'#141410',inkOn:'#fcfbf7',y}); y+=56;
+      for(let i=0;i<rows.length;i++){
+        const a=rows[i];
+        const clash = i>0 && rows[i-1].set[2] > a.set[1];
+        ops.push({t:'row',a,y,time:`${a.set[1]}–${a.set[2]}`,sub:a.set[3]+(clash?'  ⚠ overlaps':''),color:PC[prim(a)]}); y+=44;
+      }
+      y+=18;
+    }
+    const untimed=sel.filter(a=>!a.set);
+    if(untimed.length){
+      ops.push({t:'gh',label:'Set time TBA',color:'#141410',inkOn:'#fcfbf7',y}); y+=56;
+      for(const a of untimed){ops.push({t:'row',a,y,time:'',sub:a.city||a.country,color:PC[prim(a)]}); y+=44;}
+      y+=18;
+    }
+  } else {
+    for(const g of ORDER){
+      const rows=sel.filter(a=>prim(a)===g);
+      if(!rows.length) continue;
+      ops.push({t:'gh',label:GLABEL[g],color:PC[g],inkOn:'#141410',y}); y+=56;
+      for(const a of rows){
+        ops.push({t:'row',a,y,time:'',sub:[a.city||a.country,a.label].filter(Boolean).join(' · '),color:PC[g]}); y+=44;
+      }
+      y+=18;
+    }
+  }
+  y+=70;
+  return {ops,H:y,count:sel.length};
+}
+async function renderPoster(){
+  const {ops,H,count}=layout();
+  document.getElementById('count').textContent = count+' artist'+(count===1?'':'s');
+  const empty=document.getElementById('empty');
+  if(!count){pcv.style.display='none';empty.style.display='';return;}
+  empty.style.display='none';pcv.style.display='block';
+  try{await document.fonts.load('800 46px "Schibsted Grotesk"');
+      await document.fonts.load('700 21px "Schibsted Grotesk"');
+      await document.fonts.load('500 15px "Schibsted Grotesk"');}catch(e){}
+  pcv.width=PW*S; pcv.height=H*S;
+  pctx.setTransform(S,0,0,S,0,0);
+  pctx.fillStyle='#fcfbf7'; pctx.fillRect(0,0,PW,H);
+  for(const op of ops){
+    if(op.t==='head'){
+      pctx.fillStyle='#141410'; pctx.fillRect(0,0,PW,110);
+      pctx.fillStyle='#fcfbf7';
+      pctx.font='800 46px "Schibsted Grotesk"';
+      pctx.fillText('MAKING TIME ∞ 2026',40,66);
+      pctx.font='700 17px "Schibsted Grotesk"';
+      pctx.fillText('MY TIMETABLE — FORT MIFFLIN, PHILADELPHIA — SEP 18–20',40,94);
+    }
+    if(op.t==='gh'){
+      pctx.fillStyle=op.color; pctx.fillRect(0,op.y,PW,44);
+      pctx.fillStyle=op.inkOn;
+      pctx.font='800 22px "Schibsted Grotesk"';
+      pctx.fillText(op.label.toUpperCase(),40,op.y+30);
+    }
+    if(op.t==='row'){
+      pctx.fillStyle=op.color; pctx.fillRect(40,op.y+14,14,14);
+      pctx.fillStyle='#141410';
+      pctx.font='700 21px "Schibsted Grotesk"';
+      let x=72;
+      if(op.time){pctx.fillText(op.time,x,op.y+28); x+=150;}
+      pctx.fillText(op.a.name+(op.a.live?'  (live)':''),x,op.y+28);
+      if(op.sub){
+        pctx.font='500 15px "Schibsted Grotesk"';
+        pctx.fillStyle='rgba(20,20,16,.62)';
+        pctx.textAlign='right';
+        pctx.fillText(op.sub,PW-40,op.y+28);
+        pctx.textAlign='left';
+      }
+      pctx.strokeStyle='rgba(20,20,16,.18)';pctx.lineWidth=1;
+      pctx.beginPath();pctx.moveTo(40,op.y+42);pctx.lineTo(PW-40,op.y+42);pctx.stroke();
+    }
+  }
+  pctx.fillStyle='#141410';
+  pctx.strokeStyle='#141410';pctx.lineWidth=2;
+  pctx.beginPath();pctx.moveTo(0,H-56);pctx.lineTo(PW,H-56);pctx.stroke();
+  pctx.font='700 13px "Schibsted Grotesk"';
+  pctx.fillText('MAKINGTIMEISRAD.COM — UNOFFICIAL PLANNING TOOL — PLURT ∞',40,H-24);
+}
+document.getElementById('save').addEventListener('click',()=>{
+  if(!tState.sel.size)return;
+  const a=document.createElement('a');
+  a.download='making-time-2026-timetable.png';
+  a.href=pcv.toDataURL('image/png');
+  a.click();
+});
+
+/* ---------- mobile sub-views ---------- */
+const MQ = matchMedia('(max-width:920px)');
+const MVIEWS = {explore:['genres','geography','web'], timetable:['build','timetableout']};
+const mview = {explore:'genres', timetable:'build'};
+function applyMobile(){
+  for(const pane in MVIEWS){
+    for(const id of MVIEWS[pane]){
+      const el=document.getElementById(id);
+      el.classList.toggle('m-hidden', MQ.matches && id!==mview[pane]);
+    }
+    document.querySelectorAll(`.msub[data-pane="${pane}"] button`).forEach(b=>
+      b.classList.toggle('on', b.dataset.v===mview[pane]));
+  }
+  if(!panes.explore.hidden && (!MQ.matches || mview.explore==='web')) buildWeb();
+}
+document.querySelectorAll('.msub').forEach(bar=>bar.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  mview[bar.dataset.pane]=b.dataset.v;
+  applyMobile();
+}));
+MQ.addEventListener('change',applyMobile);
+
+/* ---------- init ---------- */
+(function(){
+  const cn=new Set(BILL.map(a=>a.country).filter(c=>c!=='Unknown')).size;
+  document.getElementById('foot-right').textContent='Data: '+D.meta.generated+' — '+BILL.length+' artists, '+cn+' countries';
+})();
+renderDiagram();renderGroups();renderBars();renderPicks();renderPoster();applyMobile();
+if(location.hash==='#timetable') switchTab('timetable');
+new IntersectionObserver(es=>{es.forEach(x=>{if(x.isIntersecting)buildWeb();})},{threshold:.1})
+  .observe(document.getElementById('webwrap'));
+})();
+</script>
+</body>
+</html>

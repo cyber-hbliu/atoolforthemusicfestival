@@ -1,0 +1,11 @@
+{
+  "Ciro Vitiello": {"groups": "A", "genres": ["ambient", "field recording"], "city": "", "cc": null,
+                    "_note": "RA bio says ambient/field recording; previous Philadelphia techno entry was wrong"},
+  "Erol Alkan":    {"genres": ["electro", "indie dance", "psych"],
+                    "_note": "bio name-drops his band production work; he is a DJ"},
+  "DJ Sundae":     {"genres": ["balearic", "chill-out"],
+                    "_note": "bio describes songwriters he compiles, not his own genre"},
+  "Debit":         {"groups": "A", "genres": ["experimental", "mayan flutes"],
+                    "_note": "Modern Love; bio scene context misread as techno/house"},
+  "Hervé":         {"_note": "CHECK: soundcloud.com/hervespace bio reads ambient/leftfield, not UK bass house. If confirmed, set groups A and clear label Cheap Thrills"}
+}
