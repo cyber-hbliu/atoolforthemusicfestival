@@ -120,11 +120,7 @@ def discogs_genres(name, token):
                 tags.append(t)
     return tags
 
-
-# MusicBrainz REQUIRES a user-agent with contact info and 503s anything
-# anonymous. Put YOUR email or a URL here (https://musicbrainz.org/doc/
-# MusicBrainz_API/Rate_Limiting):
-MB_CONTACT = "your-email@example.com"        # <-- EDIT THIS
+MB_CONTACT = "ishbliu@gmail.com"        # <-- EDIT THIS
 MB_UA = {"user-agent": f"makingtime-2026-tool/1.0 ( {MB_CONTACT} )"}
 MB_FAILS = {"n": 0}                          # circuit breaker
 
@@ -217,8 +213,7 @@ def main():
                 print(f"  ! musicbrainz {name}: {e}")
                 if MB_FAILS["n"] >= 5:
                     print("  (musicbrainz disabled for this run — 5 straight "
-                          "failures; set MB_CONTACT at the top of this file "
-                          "to your email/URL, MB 503s anonymous clients)")
+                          "failures; set MB_CONTACT at the top of this file ")
         if dg:
             try:
                 g = discogs_genres(name, dg)
