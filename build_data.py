@@ -2,15 +2,6 @@
 """Build data.js for the Making Time 2026 page.
 Lineup + official artist links: https://makingtimeisrad.com/lineup/
 (RA listing: https://ra.co/events/2395557)
-
-Pipeline (all local): bandcamp_tags.py -> classify_bios.py -> this file.
-Merge precedence: overrides.json > hand metadata below > bio/tag classification.
-Groups: T techno - E electro - J dnb/jungle/breaks - H house - A ambient/experimental (DJs) -
-        M ambient/folk/vocal (musicians) -
-        A ambient/experimental/idm - B alternative/indie bands
-META per artist: (city, cc, groups, genres, ra_slug).
-LINKS per artist: (official url from the lineup page, 1 = billed as live set).
-Labels are editorial where filled; blank = unknown, not none.
 """
 import json, os
 
@@ -552,8 +543,7 @@ LABELS = {
 "upsammy": "PAN",
 }
 
-# Set times: paste when published (usually week of the festival).
-# Format: "Artist Name": ["Fri"|"Sat"|"Sun", "HH:MM", "HH:MM", "Stage name"]
+
 SETTIMES = {}
 
 COUNTRY = {"US": "United States", "GB": "United Kingdom", "DE": "Germany", "NL": "Netherlands", "FR": "France", "IT": "Italy", "JP": "Japan", "CA": "Canada", "AU": "Australia", "BE": "Belgium", "ES": "Spain", "MX": "Mexico", "CO": "Colombia", "BR": "Brazil", "CL": "Chile", "PE": "Peru", "EC": "Ecuador", "VE": "Venezuela", "DO": "Dominican Republic", "GT": "Guatemala", "BO": "Bolivia", "PR": "Puerto Rico", "JM": "Jamaica", "IE": "Ireland", "NO": "Norway", "SE": "Sweden", "DK": "Denmark", "PL": "Poland", "RU": "Russia", "UA": "Ukraine", "RO": "Romania", "RS": "Serbia", "CH": "Switzerland", "LT": "Lithuania", "PT": "Portugal", "GE": "Georgia", "TR": "Turkey", "IL": "Israel", "PS": "Palestine", "LB": "Lebanon", "IR": "Iran", "TN": "Tunisia", "ET": "Ethiopia", "KE": "Kenya", "NG": "Nigeria", "ZA": "South Africa", "KR": "South Korea", "CN": "China", "TW": "Taiwan", "NZ": "New Zealand", "IN": "India", "GR": "Greece"}
