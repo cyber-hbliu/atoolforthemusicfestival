@@ -1,27 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-scrape_ra.py — pull Making Time ∞ (Fort Mifflin) lineups + artist metadata
-straight from Resident Advisor's GraphQL endpoint (https://ra.co/graphql).
-
-Run this LOCALLY (RA is blocked from cloud sandboxes but responds fine to a
-normal browser user-agent from a residential connection):
-
-    pip install requests
-    python scrape_ra.py            # writes ra_dump.json
-    python scrape_ra.py --introspect   # print available Artist/Event fields first
-
-Then feed ra_dump.json into build_data.py to regenerate data.js.
-
-Notes
------
-* No auth token needed; the browser user-agent header is the whole trick.
-* Be polite: ~1 request/second. It's the same endpoint the ra.co frontend uses.
-* RA's schema shifts occasionally. If a query 400s, run --introspect and
-  adjust the field lists below (ARTIST_FIELDS / EVENT_QUERY).
-* The old residentadvisor.net /api/dj.asmx SOAP API is dead legacy — it
-  required an issued UserID/AccessKey. Ignore it; GraphQL is the live one.
-"""
+ 
 import argparse, json, re, sys, time
 import requests
 
