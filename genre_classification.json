@@ -1,0 +1,453 @@
+{
+ "1morning": {
+  "groups": "T",
+  "genres": [
+   "hardgroove techno",
+   "techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Aurora Halal": {
+  "groups": "TH",
+  "genres": [
+   "ambient techno",
+   "outsider house",
+   "techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Avalon Emerson": {
+  "groups": "TH",
+  "genres": [
+   "downtempo",
+   "melodic techno",
+   "tech house",
+   "techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Bicep": {
+  "groups": "HT",
+  "genres": [
+   "house",
+   "leftfield",
+   "stutter house",
+   "techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Carrier": {
+  "groups": "A",
+  "genres": [
+   "idm",
+   "minimal drum and bass"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Cry": {
+  "groups": "B",
+  "genres": [
+   "punk"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Dania": {
+  "groups": "A",
+  "genres": [
+   "ambient",
+   "drone",
+   "electroacoustic"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Daniel Avery": {
+  "groups": "J",
+  "genres": [
+   "acid house",
+   "ambient",
+   "breakbeat",
+   "breaks",
+   "downtempo",
+   "drum and bass"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Daphni": {
+  "groups": "H",
+  "genres": [
+   "house"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "De Schuurman": {
+  "groups": "J",
+  "genres": [
+   "bubbling house"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Debit": {
+  "groups": "T",
+  "genres": [
+   "techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "DJ LAG": {
+  "groups": "TH",
+  "genres": [
+   "gqom",
+   "house"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "DJ Python": {
+  "groups": "",
+  "genres": [
+   "ambient"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Dopplereffekt": {
+  "groups": "TE",
+  "genres": [
+   "detroit techno",
+   "electro"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Ehua": {
+  "groups": "J",
+  "genres": [
+   "uk garage"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Emily A. Sprague": {
+  "groups": "",
+  "genres": [
+   "ambient",
+   "minimal"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Identified Patient": {
+  "groups": "T",
+  "genres": [
+   "ebm",
+   "leftfield",
+   "techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Introspekt": {
+  "groups": "J",
+  "genres": [
+   "2-step",
+   "dubstep",
+   "uk garage"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Jeff Parker": {
+  "groups": "M",
+  "genres": [
+   "jazz",
+   "jazz and blues"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "John Talabot": {
+  "groups": "H",
+  "genres": [
+   "tech house"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Kim Gordon": {
+  "groups": "B",
+  "genres": [
+   "alternative rock",
+   "experimental rock",
+   "indie rock",
+   "noise rock",
+   "rock"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "LEECH": {
+  "groups": "B",
+  "genres": [
+   "instrumental rock",
+   "post-rock",
+   "progressive rock",
+   "rock"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Main Phase": {
+  "groups": "J",
+  "genres": [
+   "2-step",
+   "dub",
+   "uk garage"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Marcel Dettmann": {
+  "groups": "T",
+  "genres": [
+   "minimal techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Mark Ernestus": {
+  "groups": "T",
+  "genres": [
+   "dub techno",
+   "techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Martyn": {
+  "groups": "J",
+  "genres": [
+   "dubstep",
+   "post-dubstep"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Mary Lattimore": {
+  "groups": "MA",
+  "genres": [
+   "ambient",
+   "experimental",
+   "new age",
+   "harp"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Octo Octa": {
+  "groups": "H",
+  "genres": [
+   "house"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Pan·American": {
+  "groups": "",
+  "genres": [
+   "ambient"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "QRTR": {
+  "groups": "H",
+  "genres": [
+   "house"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Sandwell District": {
+  "groups": "T",
+  "genres": [
+   "techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Sergeant": {
+  "groups": "",
+  "genres": [
+   "rock and indie"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "SEXTILE": {
+  "groups": "BT",
+  "genres": [
+   "acid house",
+   "drum and bass",
+   "post-punk",
+   "punk",
+   "techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Skee Mask": {
+  "groups": "TA",
+  "genres": [
+   "ambient",
+   "ambient techno",
+   "breakbeat",
+   "experimental electronic",
+   "hardgroove techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Spivak": {
+  "groups": "B",
+  "genres": [
+   "ambient pop",
+   "art pop",
+   "bedroom pop",
+   "experimental",
+   "minimal wave"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Spray": {
+  "groups": "",
+  "genres": [
+   "synthpop"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "The Space Lady": {
+  "groups": "B",
+  "genres": [
+   "psychedelic pop",
+   "synth pop"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Theo Parrish": {
+  "groups": "H",
+  "genres": [
+   "deep house",
+   "house"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Tiga": {
+  "groups": "EH",
+  "genres": [
+   "electro",
+   "electroclash",
+   "house",
+   "techno",
+   "uk garage"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Verraco": {
+  "groups": "T",
+  "genres": [
+   "techno",
+   "wonky techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Wata Igarashi": {
+  "groups": "AT",
+  "genres": [
+   "experimental electronic",
+   "techno"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Yu Su": {
+  "groups": "A",
+  "genres": [
+   "ambient",
+   "dub",
+   "experimental",
+   "krautrock",
+   "pop"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ },
+ "Yumi": {
+  "groups": "J",
+  "genres": [
+   "breakbeat",
+   "dnb"
+  ],
+  "sources": [
+   "musicbrainz"
+  ]
+ }
+}
