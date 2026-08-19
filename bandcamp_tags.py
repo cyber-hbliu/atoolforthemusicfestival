@@ -1,6 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+bandcamp_tags.py — find each artist's Bandcamp page and collect the genre
+tags from their most recent releases. Run locally:
 
+    pip install requests beautifulsoup4
+    python bandcamp_tags.py              # reads artist names from data.js
+    python bandcamp_tags.py --year 2026  # only the 2026 bill
+
+Writes bandcamp_tags.json  {name: {url, matched, tags, releases}}
+and bandcamp_review.csv    for eyeballing the matches.
+
+Bandcamp has no public API; this walks the public search page and release
+pages politely (1 req/s). Tags on Bandcamp are artist-assigned, which makes
+them the most honest genre signal available — better than press bios.
+classify_bios.py merges these tags into the group assignment, and
+build_data.py picks up the page URL for each artist card.
+
+Matching is fuzzy-but-conservative: it takes a search hit only when the
+normalized band name equals or contains the query (so "Nothing" won't match
+"Nothing But Thieves"). Everything below that confidence lands in the CSV
+as "no confident match" for you to resolve by hand in overrides.json:
+    {"Artist Name": {"bc": "https://artistname.bandcamp.com"}}
+"""
 import argparse, csv, json, re, sys, time, unicodedata
 import requests
 from bs4 import BeautifulSoup
@@ -81,13 +103,24 @@ def main():
     for i, a in enumerate(artists, 1):
         name = a["name"]
         try:
-            url, matched = search_artist(name)
-            time.sleep(SLEEP)
+            # official lineup links 28 artists' Bandcamp pages — use those
+            # directly; only fall back to search for everyone else
+            official = (a.get("url") or "")
+            if "bandcamp.com" in official:
+                url, matched = official.split("?")[0], "official lineup link"
+            else:
+                url, matched = search_artist(name)
+                time.sleep(SLEEP)
             if not url:
                 rows.append([name, "", "", "no confident match"])
                 continue
-            tags, rels = [], release_urls(url)
-            time.sleep(SLEEP)
+            if "/album/" in url or "/track/" in url:
+                rels = [url]                      # album link -> that release
+            else:
+                root = re.match(r"https?://[^/]+", url).group(0)
+                rels = release_urls(root)
+                time.sleep(SLEEP)
+            tags = []
             for r in rels:
                 try:
                     for t in release_tags(r):
