@@ -544,7 +544,52 @@ LABELS = {
 }
 
 
-SETTIMES = {}
+# official set times, transcribed from the three day posters — kept in their own module
+from settimes_2026 import SETTIMES
+
+# poster spelling -> lineup canonical spelling
+NAME_BRIDGE = {
+"Andrew Max": "Andrew Max FT", "Arthur": "Arthur (DE)", "EAR": "ear",
+"Jewelssea": "JEWELSSEA", "Pan•American": "Pan·American", "QOSO": "Qoso",
+"Shaun D.": "Shaun D", "They Are Gutting a Body of Water": "They Are Gutting A Body Of Water",
+"Elori Saxl": "Elori Saxl & Henry Solomon", "Henry Solomon": "Elori Saxl & Henry Solomon",
+}
+
+# two artists on the posters who were not on the lineup page
+EXTRA_META = {
+"Atlas Sound": ("Atlanta", "US", "B", ["indie", "ambient pop"], None),
+"Laraaji": ("New York", "US", "M", ["new age", "zither", "ambient"], None),
+}
+
+def to_min_st(t):
+    t = t.strip().upper()
+    ap = "PM" if t.endswith("PM") else "AM"
+    hm = t[:-2]
+    h, m = (hm.split(":") + ["0"])[:2]
+    h, m = int(h), int(m)
+    if ap == "PM" and h != 12: h += 12
+    if ap == "AM" and h == 12: h = 0
+    v = h * 60 + m
+    return v + 1440 if v < 720 else v
+
+sets_out = []
+person_sets = {}
+for bill, (day, zone, start, end, live, members) in SETTIMES.items():
+    sm, em = to_min_st(start), to_min_st(end)
+    if em <= sm: em += 1440
+    canon = [NAME_BRIDGE.get(p, p) for p in members]
+    rec = {"bill": bill, "day": day, "zone": zone, "start": start, "end": end,
+           "s": sm, "e": em, "live": live, "members": sorted(set(canon), key=str.lower)}
+    sets_out.append(rec)
+    for p in rec["members"]:
+        person_sets.setdefault(p, []).append(
+            {"bill": bill, "day": day, "zone": zone, "start": start, "end": end,
+             "s": sm, "e": em, "live": live})
+DAYORD = {"Fri": 0, "Sat": 1, "Sun": 2}
+sets_out.sort(key=lambda x: (DAYORD[x["day"]], x["s"]))
+for v in person_sets.values():
+    v.sort(key=lambda x: (DAYORD[x["day"]], x["s"]))
+
 
 COUNTRY = {"US": "United States", "GB": "United Kingdom", "DE": "Germany", "NL": "Netherlands", "FR": "France", "IT": "Italy", "JP": "Japan", "CA": "Canada", "AU": "Australia", "BE": "Belgium", "ES": "Spain", "MX": "Mexico", "CO": "Colombia", "BR": "Brazil", "CL": "Chile", "PE": "Peru", "EC": "Ecuador", "VE": "Venezuela", "DO": "Dominican Republic", "GT": "Guatemala", "BO": "Bolivia", "PR": "Puerto Rico", "JM": "Jamaica", "IE": "Ireland", "NO": "Norway", "SE": "Sweden", "DK": "Denmark", "PL": "Poland", "RU": "Russia", "UA": "Ukraine", "RO": "Romania", "RS": "Serbia", "CH": "Switzerland", "LT": "Lithuania", "PT": "Portugal", "GE": "Georgia", "TR": "Turkey", "IL": "Israel", "PS": "Palestine", "LB": "Lebanon", "IR": "Iran", "TN": "Tunisia", "ET": "Ethiopia", "KE": "Kenya", "NG": "Nigeria", "ZA": "South Africa", "KR": "South Korea", "CN": "China", "TW": "Taiwan", "NZ": "New Zealand", "IN": "India", "GR": "Greece"}
 REGION = {"US": "North America", "CA": "North America", "MX": "North America", "PR": "North America", "GB": "UK & Ireland", "IE": "UK & Ireland", "DE": "Europe", "NL": "Europe", "FR": "Europe", "IT": "Europe", "BE": "Europe", "ES": "Europe", "NO": "Europe", "SE": "Europe", "DK": "Europe", "PL": "Europe", "RU": "Europe", "UA": "Europe", "RO": "Europe", "RS": "Europe", "CH": "Europe", "LT": "Europe", "PT": "Europe", "GE": "Europe", "TR": "Europe", "CO": "Latin America", "BR": "Latin America", "CL": "Latin America", "PE": "Latin America", "EC": "Latin America", "VE": "Latin America", "DO": "Latin America", "GT": "Latin America", "BO": "Latin America", "JM": "Latin America", "IL": "Middle East & Africa", "PS": "Middle East & Africa", "LB": "Middle East & Africa", "IR": "Middle East & Africa", "TN": "Middle East & Africa", "ET": "Middle East & Africa", "KE": "Middle East & Africa", "NG": "Middle East & Africa", "ZA": "Middle East & Africa", "JP": "Asia", "KR": "Asia", "CN": "Asia", "TW": "Asia", "IN": "Asia", "AU": "Oceania", "NZ": "Oceania", "GR": "Europe"}
@@ -579,13 +624,29 @@ for name in LINEUP:
         "name": name, "city": city,
         "country": COUNTRY.get(cc, "Unknown"), "region": REGION.get(cc, "Unknown"),
         "groups": [GROUPMAP[g] for g in grp], "genres": genres, "label": label,
-        "url": url, "live": bool(live), "set": SETTIMES.get(name),
+        "url": url, "live": bool(live) or any(x["live"] for x in person_sets.get(name, [])),
+        "sets": person_sets.get(name, []),
     })
 
+for nm, (city, cc, grp, genres, _slug) in EXTRA_META.items():
+    if nm not in {a["name"] for a in artists}:
+        artists.append({
+            "name": nm, "city": city,
+            "country": COUNTRY.get(cc, "Unknown"), "region": REGION.get(cc, "Unknown"),
+            "groups": [GROUPMAP[g] for g in grp], "genres": genres, "label": "",
+            "url": None, "live": any(x["live"] for x in person_sets.get(nm, [])),
+            "sets": person_sets.get(nm, []),
+        })
+artists.sort(key=lambda a: a["name"].lower())
+
 data = {
-    "meta": {"title": "Making Time 2026", "generated": "2026-08-15", "settimes": bool(SETTIMES),
-             "source": "https://makingtimeisrad.com/lineup/"},
+    "meta": {"title": "Making Time 2026", "generated": "2026-09-15", "settimes": True,
+             "source": "https://makingtimeisrad.com/lineup/",
+             "days": [["Fri", "Friday, Sep 18"], ["Sat", "Saturday, Sep 19"], ["Sun", "Sunday, Sep 20"]],
+             "zones": ["Transcendental Zone", "Majestic Zone", "Futuristic Zone",
+                       "Option5", "The Lot Radio Zone", "∞ Zone"]},
     "artists": artists,
+    "sets": sets_out,
 }
 with open("data.js", "w", encoding="utf-8") as f:
     f.write("// Making Time 2026 bill — see build_data.py for sources and pipeline\n")
