@@ -1,48 +1,8 @@
 {
-  "Ciro Vitiello": {
-    "groups": "A",
-    "genres": [
-      "ambient",
-      "field recording"
-    ],
-    "city": "",
-    "cc": null,
-    "_note": "RA bio says ambient/field recording; previous Philadelphia techno entry was wrong"
-  },
-  "Erol Alkan": {
-    "genres": [
-      "electro",
-      "indie dance",
-      "psych"
-    ],
-    "_note": "bio name-drops his band production work; he is a DJ"
-  },
-  "DJ Sundae": {
-    "genres": [
-      "balearic",
-      "chill-out"
-    ],
-    "_note": "bio describes songwriters he compiles, not his own genre"
-  },
-  "Debit": {
-    "groups": "A",
-    "genres": [
-      "experimental",
-      "mayan flutes"
-    ],
-    "_note": "Modern Love; bio scene context misread as techno/house"
-  },
-  "Hervé": {
-    "groups": "A",
-    "genres": [
-      "ambient",
-      "leftfield",
-      "acid",
-      "dub"
-    ],
-    "label": "",
-    "cc": null,
-    "city": "",
-    "_note": "RESOLVED: RA bio + soundcloud.com/hervespace = leftfield/ambient artist, not UK bass-house Hervé"
-  }
+  "DJ Godfather": {"groups": "E", "genres": ["ghettotech", "electro", "booty bass"]},
+  "Zillas on Acid": {"groups": "E", "genres": ["acid", "electro"]},
+  "Main Phase": {"groups": "J", "genres": ["UK garage", "2-step"]},
+  "Introspekt": {"groups": "J", "genres": ["UK garage", "breaks"]},
+  "DJ SWISHA": {"groups": "J", "genres": ["jersey club", "breaks"]},
+  "Ma Sha": {"groups": "J", "genres": ["club", "breaks"]}
 }
